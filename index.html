@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise Financeira - Importação/Exportação</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Estilo personalizado -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="assets/ico.ico">
+    <link rel="icon" type="image/png" href="assets/ico.png">
+    <link rel="apple-touch-icon" href="assets/ico.png">
+    <!-- Título que aparece no link -->
+    <meta property="og:title" content="Análise de Extrato Bancário">
+
+    <!-- Descrição abaixo do título -->
+    <meta property="og:description" content="Sistema inteligente para analisar, categorizar e gerar relatórios de extratos bancários. Ideal para controle financeiro pessoal ou empresarial.">
+
+    <!-- URL do link -->
+    <meta property="og:url" content="https://betinribeiro.github.io/analise_extrato/">
+
+    <!-- Imagem exibida no link (de preferência 1200x630px) -->
+    <meta property="og:image" content="https://betinribeiro.github.io/analise_extrato/assets/icons/preview.png">
+
+    <!-- Tipo do conteúdo -->
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card (opcional, mas recomendado) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Análise de Extrato Bancário">
+    <meta name="twitter:description" content="Sistema inteligente para analisar, categorizar e gerar relatórios de extratos bancários. Ideal para controle financeiro pessoal ou empresarial.">
+    <meta name="twitter:image" content="https://betinribeiro.github.io/analise_extrato/assets/preview.png">
+
+
+</head>
+<body class="bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <!-- Cabeçalho -->
+    <header class="text-center mb-12">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+        <i class="fas fa-file-export text-primary"></i>
+        Análise Financeira
+      </h1>
+      <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+        Gerencie suas transações financeiras, visualize relatórios e importe/exporte dados em formato JSON (.txt)
+      </p>
+    </header>
+    
+    <!-- Notificação flutuante -->
+    <div id="notification" class="fixed top-6 right-6 z-50 max-w-md w-full p-4 rounded-xl shadow-lg transition-all duration-500 transform translate-y-[-200%]">
+      <div class="flex">
+        <div id="notification-icon" class="flex-shrink-0 text-white mr-3 rounded-full w-8 h-8 flex items-center justify-center"></div>
+        <div>
+          <h3 id="notification-title" class="font-bold text-white"></h3>
+          <p id="notification-content" class="text-white text-sm mt-1"></p>
+        </div>
+        <button class="ml-auto text-white text-xl opacity-70 hover:opacity-100" onclick="hideNotification()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Painel Esquerdo - Importação/Exportação -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-xl p-6 h-full">
+          <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-exchange-alt text-primary"></i>
+            Importação & Exportação
+          </h2>
+          
+          <!-- Card de Importação -->
+          <div class="import-export-card bg-blue-50 rounded-2xl p-5 mb-6 card-glow">
+            <div class="text-blue-700 mb-4 flex items-center gap-3">
+              <div class="feature-icon bg-blue-100 text-blue-600">
+                <i class="fas fa-file-import"></i>
+              </div>
+              <h3 class="text-lg font-bold">Importar Transações</h3>
+            </div>
+            
+            <p class="text-blue-800 text-sm mb-4">
+              Importe dados financeiros de um arquivo .txt contendo transações em formato JSON.
+              Todos os dados serão adicionados à base atual.
+            </p>
+            
+            <input type="file" id="import-file" class="file-input-hidden" accept=".txt" />
+            <label for="import-file" class="cursor-pointer w-full">
+              <div class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl flex items-center justify-center font-medium transition duration-300">
+                <i class="fas fa-upload mr-2"></i>
+                Selecionar Arquivo .txt
+              </div>
+            </label>
+            
+            <p id="file-name-display" class="text-blue-800 text-sm mt-2 text-center italic"></p>
+            
+            <div class="flex mt-4">
+              <button id="import-btn" class="flex-1 bg-blue-800 hover:bg-blue-900 text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center disabled:opacity-50" disabled>
+                <i class="fas fa-database mr-2"></i>
+                Importar Dados
+              </button>
+            </div>
+          </div>
+          
+          <!-- Card de Exportação -->
+          <div class="import-export-card bg-green-50 rounded-2xl p-5 card-glow">
+            <div class="text-green-700 mb-4 flex items-center gap-3">
+              <div class="feature-icon bg-green-100 text-green-600">
+                <i class="fas fa-file-export"></i>
+              </div>
+              <h3 class="text-lg font-bold">Exportar Transações</h3>
+            </div>
+            
+            <p class="text-green-800 text-sm mb-4">
+              Exporte todas as transações salvas em formato JSON para um arquivo .txt. 
+              Você pode usar este arquivo para fazer backup ou transferir dados.
+            </p>
+            
+            <div class="flex flex-col gap-2">
+              <button id="export-btn" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-xl flex items-center justify-center font-medium transition duration-300">
+                <i class="fas fa-download mr-2"></i>
+                Exportar para .txt
+              </button>
+              
+              <button id="reset-btn" class="w-full bg-rose-600 hover:bg-rose-700 text-white px-4 py-3 rounded-xl flex items-center justify-center font-medium transition duration-300 mt-2">
+                <i class="fas fa-trash mr-2"></i>
+                Limpar Todos os Dados
+              </button>
+            </div>
+          </div>
+          
+          <!-- Dicas para o usuário -->
+          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-6 rounded-xl">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-yellow-500 text-xl"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-yellow-800 text-sm">
+                  <strong>Formato JSON:</strong> Os arquivos .txt devem conter dados estruturados em JSON. O formato é compatível com transações financeiras contendo id, data, descrição, estabelecimento e valor.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Painel Central - Entrada de dados -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-keyboard text-primary"></i>
+            Entrada Manual de Dados
+          </h2>
+          
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-xl">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 mt-0.5">
+                <i class="fas fa-lightbulb text-blue-500 text-xl"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-blue-800 text-sm">
+                  <strong>Formato requerido:</strong> Cada transação em uma linha no formato
+                  <code class="bg-blue-100 px-2 py-1 rounded text-blue-800 font-mono">ID;Data;Descrição;Estabelecimento;Valor</code>
+                  <br>Exemplo: 
+                  <code class="bg-blue-100 px-2 py-1 rounded text-blue-800 font-mono block mt-2">fa3631ab-6448-49a8-8f6f-a2a94a38cfea;31/12/2023;Cartão da Conta;Gela Prime Mercadinho Juazeiro Do Nbr;-22,80</code>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <label for="transactions" class="block text-sm font-medium text-gray-700 mb-2">Transações:</label>
+            <textarea id="transactions" rows="8" class="floating-input bg-gray-50" placeholder="Cole suas transações aqui no formato ID;Data;Descrição;Estabelecimento;Valor"></textarea>
+          </div>
+          
+          <div class="flex flex-wrap gap-3">
+            <button id="add-btn" class="px-4 py-3 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl flex items-center shadow-md transition duration-300">
+              <i class="fas fa-plus mr-2"></i>
+              Adicionar Transações
+            </button>
+            
+            <button id="sample-btn" class="px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-xl flex items-center shadow-md transition duration-300">
+              <i class="fas fa-file-alt mr-2"></i>
+              Carregar Exemplo
+            </button>
+          </div>
+          
+          <div id="feedback" class="mt-6 rounded-xl p-4"></div>
+        </div>
+        
+        <!-- Transações recentes -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 mt-6">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+              <i class="fas fa-receipt text-primary"></i>
+              Transações Recentes
+            </h2>
+            <span id="transaction-count" class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">0</span>
+          </div>
+          
+          <div id="recent-transactions" class="space-y-3">
+            <div class="text-gray-500 italic text-sm py-10 text-center bg-gray-50 rounded-xl">
+              <i class="fas fa-comment-alt-exclamation text-gray-400 text-2xl mb-2"></i>
+              <p>Nenhuma transação registrada</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Resumo financeiro e gráfico -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      <!-- Resumo financeiro -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-chart-pie text-primary"></i>
+            Resumo Financeiro
+          </h2>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-100">
+              <div class="text-blue-700 text-sm font-medium flex items-center gap-1">
+                <i class="fas fa-arrow-up"></i>
+                Entradas
+              </div>
+              <div id="total-income" class="text-2xl font-bold text-blue-800 mt-2">R$ 0,00</div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-xl border border-red-100">
+              <div class="text-red-700 text-sm font-medium flex items-center gap-1">
+                <i class="fas fa-arrow-down"></i>
+                Saídas
+              </div>
+              <div id="total-expense" class="text-2xl font-bold text-red-800 mt-2">R$ 0,00</div>
+            </div>
+            
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-xl border border-gray-200 col-span-2">
+              <div class="text-gray-800 text-sm font-medium">
+                Saldo Geral
+              </div>
+              <div id="balance" class="text-2xl font-bold text-gray-900 mt-2">R$ 0,00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Gráfico -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-xl p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <i class="fas fa-chart-line text-primary"></i>
+            Entradas e Saídas por Mês
+          </h2>
+          <div class="chart-container">
+            <canvas id="finance-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+    <script src="script.js"></script>
+</body>
+</html>
