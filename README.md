@@ -90,5 +90,5 @@ Importe um arquivo `.txt` com conteúdo JSON seguindo o modelo acima. O sistema 
 
 ---
 
-🧑‍💻 Desenvolvido por [Seu Nome]  
+🧑‍💻 Desenvolvido por Rogoberto Ribeiro
 📅 Última atualização: Maio de 2025
